@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 3
+names: ['dogs1', 'dogs2', 'dogs3']
+
+roboflow:
+  workspace: ani-cray3
+  project: animal2-dnrpa
+  version: 4
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/ani-cray3/animal2-dnrpa/dataset/4
