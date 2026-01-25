@@ -1,0 +1,108 @@
+import cv2
+import numpy as np
+from ultralytics import YOLO
+
+# Load trained model
+model = YOLO(r"C:\Users\Arnav Ranjan\OneDrive\Desktop\ADAS\runs\detect\train3\weights\best.pt")
+
+# Video or webcam
+cap = cv2.VideoCapture(r"C:\Users\Arnav Ranjan\OneDrive\Desktop\ADAS\Car Crash on Dog FRMO Macedonia Skopje (DOG continues to live).mp4")
+# cap = cv2.VideoCapture(0)
+
+CONF_THRESHOLD = 0.45
+STABLE_FRAMES = 2
+NIGHT_BRIGHTNESS_THRESHOLD = 70  # lower = darker
+
+print("ADAS demo with Night Mode started. Press Q to quit.")
+
+def get_brightness(frame):
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    return np.mean(gray)
+
+def enhance_night(frame):
+    lab = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)
+    l, a, b = cv2.split(lab)
+
+    clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
+    l_enhanced = clahe.apply(l)
+
+    enhanced_lab = cv2.merge((l_enhanced, a, b))
+    return cv2.cvtColor(enhanced_lab, cv2.COLOR_LAB2BGR)
+
+while cap.isOpened():
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    # 🌙 AUTO NIGHT MODE
+    brightness = get_brightness(frame)
+    night_mode = brightness < NIGHT_BRIGHTNESS_THRESHOLD
+
+    if night_mode:
+        frame = enhance_night(frame)
+
+    animal_detected = False
+
+    results = model(frame, conf=CONF_THRESHOLD, verbose=False)
+
+    for r in results:
+        for box in r.boxes:
+            conf = float(box.conf[0])
+            if conf < CONF_THRESHOLD:
+                continue
+
+            x1, y1, x2, y2 = map(int, box.xyxy[0])
+            animal_detected = True
+
+            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 2)
+            cv2.putText(
+                frame,
+                f"ANIMAL {conf:.2f}",
+                (x1, y1 - 10),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.7,
+                (0, 0, 255),
+                2
+            )
+
+    # ---------------- ADAS DECISION ----------------
+    if animal_detected:
+        cv2.putText(
+            frame,
+            "⚠ ANIMAL AHEAD - APPLY BRAKE!",
+            (30, 50),
+            cv2.FONT_HERSHEY_DUPLEX,
+            1,
+            (0, 0, 255),
+            3
+        )
+    else:
+        cv2.putText(
+            frame,
+            "ROAD CLEAR",
+            (30, 50),
+            cv2.FONT_HERSHEY_DUPLEX,
+            1,
+            (0, 200, 0),
+            3
+        )
+
+    # 🌙 Night mode indicator
+    if night_mode:
+        cv2.putText(
+            frame,
+            "NIGHT MODE",
+            (30, 90),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.9,
+            (255, 255, 0),
+            2
+        )
+
+    cv2.imshow("ADAS Animal Detection Demo", frame)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
