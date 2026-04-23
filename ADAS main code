@@ -3,10 +3,10 @@ import numpy as np
 from ultralytics import YOLO
 
 # Load trained model
-model = YOLO(r"C:\Users\Arnav Ranjan\OneDrive\Desktop\ADAS\runs\detect\train3\weights\best.pt")
+model = YOLO(r"Paste your best.pt from weights path after executing training module code")
 
 # Video or webcam
-cap = cv2.VideoCapture(r"C:\Users\Arnav Ranjan\OneDrive\Desktop\ADAS\Car Crash on Dog FRMO Macedonia Skopje (DOG continues to live).mp4")
+cap = cv2.VideoCapture(r"Paste your video path")
 # cap = cv2.VideoCapture(0)
 
 CONF_THRESHOLD = 0.45
