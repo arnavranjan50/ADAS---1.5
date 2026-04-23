@@ -80,6 +80,7 @@ git clone https://github.com/your-username/ADAS-Animal-Detection.git
 cd ADAS-Animal-Detection
 
 pip install -r requirements.txt
+
 pip install ultralytics 
 
 Training the Model
@@ -89,12 +90,17 @@ python train.py
 Make sure your dataset path in data.yaml is correct.
 
 Run Demo
+
 python adas_advanced_demo.py
+
 Press Q to exit
 
 Works with both:
+
 Video file
+
 Webcam
+
 🌙 Night Mode
 
 Automatically activates when brightness is low.
@@ -126,3 +132,23 @@ Multi-object tracking (DeepSORT)
 Edge deployment (TensorRT / ONNX)
 Larger dataset for better generalization
 Integration with real vehicle braking systems
+
+🎓 Use Case
+Academic projects (B.Tech / Research)
+ADAS prototypes
+Computer vision learning
+AI safety systems
+
+📜 License
+
+This project is for educational and research purposes.
+
+🙌 Acknowledgements
+Ultralytics YOLOv8
+OpenCV
+Roboflow (for dataset tools)
+PyTorch
+
+⭐ If You Like This Project
+
+Give it a ⭐ on GitHub and share feedback!
