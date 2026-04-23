@@ -116,7 +116,9 @@ Bounding Box Area / Frame Area
 Thresholds:
 
 < 0.05 → Far
+
 0.05 - 0.12 → Close
+
 > 0.12 → Very Close
 
 ⚠️ Limitations
